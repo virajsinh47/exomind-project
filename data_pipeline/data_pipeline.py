@@ -6,7 +6,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 logger = logging.getLogger(__name__)
 
-def get_clean_lightcurve(tic_id: str) -> np.ndarray:
+def get_clean_lightcurve(tic_id: str) -> tuple[np.ndarray, np.ndarray]:
     """
     Downloads and processes a TESS light curve for a given TIC ID.
     
@@ -14,7 +14,7 @@ def get_clean_lightcurve(tic_id: str) -> np.ndarray:
         tic_id (str): The TIC ID of the target (e.g., 'TIC 279741379').
         
     Returns:
-        np.ndarray: A 1D numpy array containing the processed flux values.
+        tuple: A tuple containing (time_array, flux_array) as 1D numpy arrays.
     """
     logger.info(f"Searching for TESS light curve for {tic_id}...")
     
@@ -40,11 +40,12 @@ def get_clean_lightcurve(tic_id: str) -> np.ndarray:
     logger.info("Cleaning light curve (removing NaNs, outliers, and flattening)...")
     clean_lc = lc.remove_nans().remove_outliers().flatten(window_length=101)
     
-    # 4. Extract flux values and return a 1D numpy.ndarray
+    # 4. Extract time and flux values and return 1D numpy arrays
+    time_1d = clean_lc.time.value
     flux_1d = clean_lc.flux.value
     
-    logger.info(f"Successfully processed {tic_id}. Returning flux array of shape {flux_1d.shape}.")
-    return flux_1d
+    logger.info(f"Successfully processed {tic_id}. Returning arrays of shape {flux_1d.shape}.")
+    return time_1d, flux_1d
 
 if __name__ == "__main__":
     # --- Testing Block ---
