@@ -18,45 +18,43 @@ from model_training import predict_exoplanet
 from analytics import calculate_transit_stats
 
 # ==========================================
-# 🚀 THE STREAMLIT UI (PROFESSIONAL THEME)
+# 🚀 THE STREAMLIT UI (PRO MAX UX DESIGN)
 # ==========================================
 
 st.set_page_config(page_title="ExoMind Control", layout="wide", page_icon="🪐", initial_sidebar_state="collapsed")
 
-# 1. PROFESSIONAL CINEMATIC DEEP SPACE CSS
+# 1. UI/UX PRO MAX CSS INJECTION
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Fira+Sans:wght@300;400;500;600;700&display=swap');
 
-    /* Global Font & Transparent App Background */
+    /* BASE THEME - OLED DARK MODE */
     html, body, [class*="css"] {
-        font-family: 'Inter', -apple-system, sans-serif !important;
-    }
-    .stApp, .main, [data-testid="stHeader"] {
-        background-color: transparent !important;
-        color: #F8FAFC;
+        font-family: 'Fira Sans', sans-serif !important;
     }
     
-    /* Hide sidebar toggle */
+    .stApp, .main, [data-testid="stHeader"] {
+        background-color: transparent !important;
+        color: #F8FAFC !important;
+    }
+    
     [data-testid="collapsedControl"] { display: none !important; }
 
-    /* Deep Space Parallax Background */
-    /* This creates a slow, elegant starfield without breaking markdown or layouts */
+    /* BACKGROUND - SLOW CINEMATIC PARALLAX */
     body::before {
         content: '';
         position: fixed;
         top: 0; left: 0; width: 200%; height: 200%;
-        background-color: #030712;
+        background-color: #050A15; /* Deep OLED Navy */
         background-image: 
-            radial-gradient(1px 1px at 50px 50px, #ffffff, rgba(0,0,0,0)),
-            radial-gradient(1.5px 1.5px at 150px 250px, rgba(255,255,255,0.8), rgba(0,0,0,0)),
-            radial-gradient(1px 1px at 300px 100px, rgba(255,255,255,0.6), rgba(0,0,0,0)),
-            radial-gradient(2px 2px at 400px 400px, rgba(100, 200, 255, 0.9), rgba(0,0,0,0)),
-            radial-gradient(1px 1px at 600px 200px, #ffffff, rgba(0,0,0,0));
+            radial-gradient(1px 1px at 50px 50px, rgba(255,255,255,0.8), rgba(0,0,0,0)),
+            radial-gradient(1.5px 1.5px at 150px 250px, rgba(255,255,255,0.6), rgba(0,0,0,0)),
+            radial-gradient(1px 1px at 300px 100px, rgba(255,255,255,0.5), rgba(0,0,0,0)),
+            radial-gradient(2px 2px at 400px 400px, rgba(59, 130, 246, 0.4), rgba(0,0,0,0)),
+            radial-gradient(1px 1px at 600px 200px, rgba(255,255,255,0.7), rgba(0,0,0,0));
         background-repeat: repeat;
         background-size: 800px 800px;
         animation: slowDrift 200s linear infinite;
-        opacity: 0.85;
         z-index: -1;
     }
     @keyframes slowDrift {
@@ -64,16 +62,16 @@ st.markdown("""
         to { transform: translate(-400px, -400px); }
     }
 
-    /* Clean Typography */
+    /* TYPOGRAPHY */
     h1 {
-        font-weight: 800 !important;
-        letter-spacing: -0.5px;
-        color: #FFFFFF !important;
+        font-weight: 700 !important;
+        color: #F8FAFC !important;
         text-align: center;
         margin-bottom: 0px !important;
-        padding-top: 1rem !important;
+        padding-top: 1.5rem !important;
+        font-size: 2.5rem !important;
     }
-    h3 {
+    h2, h3 {
         font-weight: 600 !important;
         color: #F8FAFC !important;
     }
@@ -81,79 +79,106 @@ st.markdown("""
         text-align: center;
         color: #94A3B8;
         font-size: 1.1rem;
-        margin-top: -10px;
-        margin-bottom: 40px;
+        margin-top: -5px;
+        margin-bottom: 30px;
         font-weight: 400;
-        letter-spacing: 0.5px;
     }
 
-    /* Streamlit Input Styling (Glassmorphism) */
-    div[data-baseweb="radio"] {
-        background: rgba(15, 23, 42, 0.6);
-        border: 1px solid rgba(56, 189, 248, 0.2);
-        padding: 10px 15px;
-        border-radius: 8px;
+    /* UNIVERSAL TEXT COLOR FIX (Solves the invisible text issue) */
+    label, p, span, div {
+        color: #E2E8F0 !important;
     }
-    .stTextInput>div>div>input {
-        background-color: rgba(15, 23, 42, 0.6) !important;
-        border: 1px solid rgba(56, 189, 248, 0.3) !important;
+
+    /* CONTROL DECK CARD */
+    div[data-testid="stVerticalBlock"] > div[style*="flex-direction: column"] > div[data-testid="stVerticalBlock"] {
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    /* FORM INPUTS */
+    div[data-baseweb="radio"] {
+        gap: 20px;
+    }
+    div[data-baseweb="radio"] > div {
+        background: rgba(30, 41, 59, 0.8);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        padding: 10px 20px;
+        border-radius: 8px;
+        transition: 0.2s ease;
+    }
+    div[data-baseweb="radio"] > div:hover {
+        border-color: #3B82F6;
+    }
+
+    .stTextInput>div>div>input, .stFileUploader>div>div {
+        background-color: rgba(30, 41, 59, 0.8) !important;
+        border: 1px solid rgba(59, 130, 246, 0.3) !important;
         color: #F8FAFC !important;
-        border-radius: 6px;
+        border-radius: 8px !important;
+        font-family: 'Fira Code', monospace !important;
     }
     .stTextInput>div>div>input:focus {
-        border-color: #38BDF8 !important;
-        box-shadow: 0 0 0 1px #38BDF8 !important;
-    }
-    label {
-        color: #CBD5E1 !important;
-        font-weight: 500 !important;
+        border-color: #3B82F6 !important;
+        box-shadow: 0 0 0 1px #3B82F6 !important;
     }
 
-    /* Enterprise Button */
+    /* PRIMARY CTA BUTTON */
     .stButton>button {
-        background-color: #0284C7;
-        color: white !important;
-        border: none;
-        border-radius: 6px;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        width: 100%;
-        height: 100%;
-        min-height: 44px;
-        transition: background-color 0.2s;
+        background-color: #2563EB !important; /* Blue-600 */
+        color: #FFFFFF !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        font-size: 1.1rem !important;
+        letter-spacing: 0.5px !important;
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 50px !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3) !important;
+        margin-top: 28px !important; /* Aligns button with inputs */
     }
     .stButton>button:hover {
-        background-color: #0369A1;
-        color: white !important;
+        background-color: #1D4ED8 !important; /* Blue-700 */
+        transform: translateY(-1px) !important;
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4) !important;
     }
 
-    /* Professional Metrics */
+    /* DATA METRICS (Monospace digits) */
     div[data-testid="metric-container"] {
-        background: rgba(15, 23, 42, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-top: 3px solid #38BDF8;
-        padding: 15px;
-        border-radius: 8px;
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid rgba(59, 130, 246, 0.15);
+        border-top: 3px solid #3B82F6;
+        padding: 20px;
+        border-radius: 10px;
         text-align: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
     div[data-testid="metric-container"] label {
         color: #94A3B8 !important;
-        font-size: 0.85rem !important;
-        font-weight: 500;
+        font-size: 0.8rem !important;
+        font-weight: 600 !important;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
     div[data-testid="metric-container"] div {
         color: #F8FAFC !important;
-        font-size: 1.5rem !important;
+        font-size: 1.6rem !important;
         font-weight: 700 !important;
+        font-family: 'Fira Code', monospace !important; /* Data styling */
     }
 
-    /* Alerts */
+    /* ALERTS */
     .stAlert {
-        background: rgba(15, 23, 42, 0.8) !important;
-        border: 1px solid #38BDF8 !important;
-        color: white !important;
+        background: rgba(30, 41, 59, 0.9) !important;
+        border: 1px solid #3B82F6 !important;
+        border-radius: 8px !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -161,35 +186,36 @@ st.markdown("""
 # ==========================================
 # HEADER
 # ==========================================
-st.markdown("<h1>🪐 ExoMind System</h1>", unsafe_allow_html=True)
+st.markdown("<h1>ExoMind System</h1>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Bharatiya Antariksh Hackathon - AI Exoplanet Detection</div>", unsafe_allow_html=True)
 
 # ==========================================
-# CENTRALIZED CONTROL DECK (Native Streamlit)
+# CENTRALIZED CONTROL DECK
 # ==========================================
-# We use native columns without wrapping them in HTML divs to prevent layout breaking.
-st.markdown("### 📡 Mission Parameters")
+# Centered Container for better visual flow
+st.write("") # Top spacing
+col_spacer1, col_center, col_spacer2 = st.columns([1, 6, 1])
 
-col1, col2, col3 = st.columns([1, 1.5, 1])
+with col_center:
+    st.markdown("### 📡 Mission Parameters")
+    
+    # Form layout
+    form_col1, form_col2 = st.columns([1, 1])
+    
+    with form_col1:
+        data_source = st.radio("Data Source", ["Live NASA API", "Local File Upload"], horizontal=True)
+        
+    with form_col2:
+        tic_id = "Uploaded File"
+        uploaded_file = None
+        if data_source == "Live NASA API":
+            tic_id = st.text_input("Target TIC ID", value="TIC 279741379")
+        else:
+            uploaded_file = st.file_uploader("Upload Light Curve", type=["fits", "csv"])
 
-with col1:
-    data_source = st.radio("Data Source", ["Live NASA API", "Local File Upload"], horizontal=True)
-
-tic_id = "Uploaded File"
-uploaded_file = None
-
-with col2:
-    if data_source == "Live NASA API":
-        tic_id = st.text_input("Target TIC ID", value="TIC 279741379")
-    else:
-        uploaded_file = st.file_uploader("Upload Light Curve", type=["fits", "csv"])
-
-with col3:
-    st.write("") # Alignment spacing
-    st.write("")
     analyze_btn = st.button("🚀 Deploy AI Pipeline")
 
-st.markdown("---")
+st.markdown("<br><hr style='border-color: rgba(59, 130, 246, 0.2);'><br>", unsafe_allow_html=True)
 
 
 # ==========================================
@@ -199,7 +225,6 @@ if analyze_btn:
     time_array, flux_array = np.array([]), np.array([])
     
     if data_source == "Live NASA API":
-        # 1. Fetch Data
         with st.spinner("Establishing uplink to NASA MAST... Downloading data..."):
             time_array, flux_array = get_clean_lightcurve(tic_id)
     else:
@@ -231,7 +256,7 @@ if analyze_btn:
     if len(flux_array) == 0:
         st.error(f"Could not find or download data for {tic_id}. Please try another ID.")
     else:
-        # 2. Run AI
+        # Run AI
         with st.spinner("Routing data to PyTorch Neural Network..."):
             target_length = 20000
             if len(flux_array) > target_length:
@@ -245,7 +270,7 @@ if analyze_btn:
 
             ai_result = predict_exoplanet(flux_for_ai)
             
-        # 3. Calculate Math
+        # Calculate Math
         with st.spinner("Calculating Orbital Mechanics (BLS)..."):
             stats = calculate_transit_stats(time_array, flux_array)
 
@@ -254,23 +279,22 @@ if analyze_btn:
         # ----------------------------------------------------
         st.markdown("### 📊 Intelligence Report")
         
-        # Highlight the AI's final decision
         if ai_result["is_planet"]:
             st.success(f"🌟 **VERDICT:** {ai_result['class_label']} Detected! (Confidence: {ai_result['confidence']*100:.1f}%)")
         else:
             st.warning(f"⚠️ **VERDICT:** {ai_result['class_label']} (Confidence: {ai_result['confidence']*100:.1f}%)")
 
-        st.write("") # Spacing
+        st.write("") 
 
-        # Display the 5 math numbers in a clean row
+        # Display the 5 math numbers
         col1, col2, col3, col4, col5 = st.columns(5)
-        col1.metric("Orbital Period", f"{stats['orbital_period_days']:.4f} Days")
-        col2.metric("Transit Duration", f"{stats['transit_duration_days'] * 24:.2f} Hrs")
+        col1.metric("Orbital Period", f"{stats['orbital_period_days']:.4f} d")
+        col2.metric("Transit Duration", f"{stats['transit_duration_days'] * 24:.2f} h")
         col3.metric("Transit Depth", f"{stats['transit_depth']:.4f}")
         col4.metric("Signal-to-Noise", f"{stats['snr']:.1f}")
         col5.metric("Data Points", f"{len(flux_array)}")
 
-        st.write("") # Spacing
+        st.write("") 
 
         # ----------------------------------------------------
         # UI: Beautiful Plotly Graph
@@ -282,11 +306,11 @@ if analyze_btn:
             x=time_array, 
             y=flux_array, 
             mode='markers',
-            marker=dict(size=3, color='#38BDF8', opacity=0.7),
+            marker=dict(size=3, color='#3B82F6', opacity=0.8),
             name='Flux Data'
         ))
         
-        # Sleek transparent dark mode plot
+        # Transparent dark mode plot matching OLED theme
         fig.update_layout(
             template="plotly_dark",
             plot_bgcolor="rgba(0,0,0,0)",
@@ -294,9 +318,10 @@ if analyze_btn:
             xaxis_title="Time (Days)",
             yaxis_title="Normalized Flux",
             margin=dict(l=20, r=20, t=40, b=20),
-            hovermode="x unified"
+            hovermode="x unified",
+            font=dict(family="Fira Code, monospace", color="#94A3B8")
         )
         st.plotly_chart(fig, use_container_width=True)
 
 else:
-    st.markdown("<div style='text-align: center; color: #64748B; margin-top: 50px;'>Awaiting Commander input... Initialize scan to begin.</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center; color: #64748B; margin-top: 80px; font-weight: 500;'>Awaiting Commander input... Initialize scan to begin.</div>", unsafe_allow_html=True)
