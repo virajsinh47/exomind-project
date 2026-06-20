@@ -5,13 +5,14 @@ import time
 import sys
 import os
 
-# Add the nested exomind-project directory to the Python path
-# This allows us to import the files created by the rest of the team.
-# Dynamically add the nested directory to the Python path
+# Dynamically add both the parent directory and nested directory to Python path
+# so it works on ANY computer (Mac, Windows, Linux) and from GitHub clones
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 nested_dir = os.path.join(parent_dir, "exomind-project")
+sys.path.append(parent_dir)
 sys.path.append(nested_dir)
+
 # Import the real functions from your team!
 from data_pipeline.data_pipeline import get_clean_lightcurve
 from model_training import predict_exoplanet
