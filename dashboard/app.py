@@ -12,25 +12,24 @@ nested_dir = os.path.join(parent_dir, "exomind-project")
 sys.path.append(parent_dir)
 sys.path.append(nested_dir)
 
-# Import the real functions from your team!
 from data_pipeline.data_pipeline import get_clean_lightcurve
 from model_training import predict_exoplanet
 from analytics import calculate_transit_stats
 
 # ==========================================
-# 🚀 THE STREAMLIT UI (PRO MAX UX DESIGN)
+# 🚀 EXO-MIND: ULTIMATE SPACE THEME UX
 # ==========================================
 
 st.set_page_config(page_title="ExoMind Control", layout="wide", page_icon="🪐", initial_sidebar_state="collapsed")
 
-# 1. UI/UX PRO MAX CSS INJECTION
+# 1. UI/UX PRO MAX CSS INJECTION (SPACE THEME)
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Fira+Sans:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
-    /* BASE THEME - OLED DARK MODE */
+    /* BASE THEME */
     html, body, [class*="css"] {
-        font-family: 'Fira Sans', sans-serif !important;
+        font-family: 'Outfit', sans-serif !important;
     }
     
     .stApp, .main, [data-testid="stHeader"] {
@@ -40,36 +39,58 @@ st.markdown("""
     
     [data-testid="collapsedControl"] { display: none !important; }
 
-    /* BACKGROUND - SLOW CINEMATIC PARALLAX */
+    /* 🌌 ANIMATED GALAXY BACKGROUND */
     body::before {
         content: '';
         position: fixed;
-        top: 0; left: 0; width: 200%; height: 200%;
-        background-color: #050A15; /* Deep OLED Navy */
+        top: -50%; left: -50%; width: 200%; height: 200%;
+        background-color: #030614;
         background-image: 
-            radial-gradient(1px 1px at 50px 50px, rgba(255,255,255,0.8), rgba(0,0,0,0)),
-            radial-gradient(1.5px 1.5px at 150px 250px, rgba(255,255,255,0.6), rgba(0,0,0,0)),
-            radial-gradient(1px 1px at 300px 100px, rgba(255,255,255,0.5), rgba(0,0,0,0)),
-            radial-gradient(2px 2px at 400px 400px, rgba(59, 130, 246, 0.4), rgba(0,0,0,0)),
-            radial-gradient(1px 1px at 600px 200px, rgba(255,255,255,0.7), rgba(0,0,0,0));
-        background-repeat: repeat;
-        background-size: 800px 800px;
-        animation: slowDrift 200s linear infinite;
-        z-index: -1;
+            radial-gradient(2px 2px at 40px 60px, #ffffff, transparent),
+            radial-gradient(2.5px 2.5px at 150px 250px, rgba(255,255,255,0.8), transparent),
+            radial-gradient(1.5px 1.5px at 300px 100px, rgba(255,255,255,0.6), transparent),
+            radial-gradient(3px 3px at 400px 400px, rgba(100, 200, 255, 0.9), transparent),
+            radial-gradient(2.5px 2.5px at 600px 200px, #ffffff, transparent),
+            radial-gradient(1.5px 1.5px at 800px 700px, rgba(255,255,255,0.5), transparent),
+            radial-gradient(3px 3px at 900px 100px, rgba(255,255,255,0.8), transparent);
+        background-size: 1000px 1000px;
+        animation: rotateSpace 250s linear infinite;
+        z-index: -2;
+        opacity: 0.9;
     }
-    @keyframes slowDrift {
-        from { transform: translate(0, 0); }
-        to { transform: translate(-400px, -400px); }
+
+    body::after {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        background: 
+            radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.12) 0%, transparent 40%),
+            radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.12) 0%, transparent 50%);
+        z-index: -1;
+        animation: pulseNebula 12s ease-in-out infinite alternate;
+        pointer-events: none;
+    }
+
+    @keyframes rotateSpace {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    @keyframes pulseNebula {
+        0% { opacity: 0.6; transform: scale(1); }
+        100% { opacity: 1; transform: scale(1.1); }
     }
 
     /* TYPOGRAPHY */
     h1 {
-        font-weight: 700 !important;
-        color: #F8FAFC !important;
+        font-weight: 800 !important;
+        background: linear-gradient(to right, #FFFFFF, #93C5FD);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         text-align: center;
         margin-bottom: 0px !important;
-        padding-top: 1.5rem !important;
-        font-size: 2.5rem !important;
+        padding-top: 2rem !important;
+        font-size: 3.5rem !important;
+        letter-spacing: -1px;
     }
     h2, h3 {
         font-weight: 600 !important;
@@ -78,107 +99,146 @@ st.markdown("""
     .subtitle {
         text-align: center;
         color: #94A3B8;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         margin-top: -5px;
-        margin-bottom: 30px;
+        margin-bottom: 40px;
         font-weight: 400;
+        letter-spacing: 1px;
     }
 
-    /* UNIVERSAL TEXT COLOR FIX (Solves the invisible text issue) */
+    /* UNIVERSAL TEXT COLOR FIX */
     label, p, span, div {
         color: #E2E8F0 !important;
     }
 
-    /* CONTROL DECK CARD */
+    /* 🎛️ GLASSMORPHISM CONTROL DECK CARD */
     div[data-testid="stVerticalBlock"] > div[style*="flex-direction: column"] > div[data-testid="stVerticalBlock"] {
-        background: rgba(15, 23, 42, 0.85);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(59, 130, 246, 0.2);
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        max-width: 900px;
+        background: rgba(10, 15, 30, 0.6);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(59, 130, 246, 0.25);
+        border-top: 1px solid rgba(139, 92, 246, 0.4); /* Purple rim light */
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.1);
+        max-width: 800px;
         margin: 0 auto;
     }
 
     /* FORM INPUTS */
     div[data-baseweb="radio"] {
-        gap: 20px;
+        gap: 15px;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
     }
     div[data-baseweb="radio"] > div {
-        background: rgba(30, 41, 59, 0.8);
+        background: rgba(15, 23, 42, 0.8);
         border: 1px solid rgba(59, 130, 246, 0.3);
-        padding: 10px 20px;
-        border-radius: 8px;
-        transition: 0.2s ease;
+        padding: 12px 24px;
+        border-radius: 12px;
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
     }
     div[data-baseweb="radio"] > div:hover {
-        border-color: #3B82F6;
+        border-color: #60A5FA;
+        background: rgba(30, 58, 138, 0.4);
+        transform: translateY(-2px);
     }
 
-    .stTextInput>div>div>input, .stFileUploader>div>div {
-        background-color: rgba(30, 41, 59, 0.8) !important;
-        border: 1px solid rgba(59, 130, 246, 0.3) !important;
-        color: #F8FAFC !important;
-        border-radius: 8px !important;
+    .stTextInput>div>div>input {
+        background-color: rgba(15, 23, 42, 0.8) !important;
+        border: 1px solid rgba(59, 130, 246, 0.4) !important;
+        color: #60A5FA !important;
+        border-radius: 12px !important;
         font-family: 'Fira Code', monospace !important;
+        text-align: center;
+        font-size: 1.2rem !important;
+        font-weight: 600 !important;
+        padding: 15px !important;
+        transition: all 0.3s ease !important;
     }
     .stTextInput>div>div>input:focus {
-        border-color: #3B82F6 !important;
-        box-shadow: 0 0 0 1px #3B82F6 !important;
+        border-color: #8B5CF6 !important;
+        box-shadow: 0 0 15px rgba(139, 92, 246, 0.3) !important;
     }
 
-    /* PRIMARY CTA BUTTON */
+    /* 🔥 FIXING THE UGLY FILE UPLOADER */
+    [data-testid="stFileUploadDropzone"] {
+        background-color: rgba(15, 23, 42, 0.5) !important;
+        border: 2px dashed rgba(59, 130, 246, 0.4) !important;
+        border-radius: 16px !important;
+        transition: all 0.3s ease !important;
+    }
+    [data-testid="stFileUploadDropzone"]:hover {
+        border-color: #8B5CF6 !important;
+        background-color: rgba(30, 58, 138, 0.3) !important;
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.2) !important;
+    }
+    [data-testid="stFileUploadDropzone"] div, [data-testid="stFileUploadDropzone"] span {
+        color: #93C5FD !important;
+    }
+
+    /* 🚀 PRIMARY LAUNCH CTA BUTTON */
     .stButton>button {
-        background-color: #2563EB !important; /* Blue-600 */
+        background: linear-gradient(135deg, #2563EB 0%, #7C3AED 100%) !important;
         color: #FFFFFF !important;
         border: none !important;
-        border-radius: 8px !important;
-        font-weight: 600 !important;
-        font-size: 1.1rem !important;
-        letter-spacing: 0.5px !important;
+        border-radius: 30px !important; /* Sleek pill shape */
+        font-weight: 700 !important;
+        font-size: 1.2rem !important;
+        letter-spacing: 2px !important;
+        text-transform: uppercase !important;
         width: 100% !important;
-        height: 100% !important;
-        min-height: 50px !important;
-        transition: all 0.2s ease !important;
-        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3) !important;
-        margin-top: 28px !important; /* Aligns button with inputs */
+        height: 60px !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4) !important;
+        margin-top: 20px !important; 
     }
     .stButton>button:hover {
-        background-color: #1D4ED8 !important; /* Blue-700 */
-        transform: translateY(-1px) !important;
-        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4) !important;
+        transform: scale(1.02) translateY(-2px) !important;
+        box-shadow: 0 15px 35px rgba(124, 58, 237, 0.6) !important;
     }
 
     /* DATA METRICS (Monospace digits) */
     div[data-testid="metric-container"] {
-        background: rgba(15, 23, 42, 0.85);
-        border: 1px solid rgba(59, 130, 246, 0.15);
-        border-top: 3px solid #3B82F6;
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        border-top: 3px solid #8B5CF6;
         padding: 20px;
-        border-radius: 10px;
+        border-radius: 12px;
         text-align: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease;
+    }
+    div[data-testid="metric-container"]:hover {
+        transform: translateY(-5px);
+        border-color: rgba(139, 92, 246, 0.5);
     }
     div[data-testid="metric-container"] label {
         color: #94A3B8 !important;
-        font-size: 0.8rem !important;
+        font-size: 0.85rem !important;
         font-weight: 600 !important;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 1px;
     }
     div[data-testid="metric-container"] div {
-        color: #F8FAFC !important;
-        font-size: 1.6rem !important;
+        background: linear-gradient(to right, #93C5FD, #C4B5FD);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 1.8rem !important;
         font-weight: 700 !important;
-        font-family: 'Fira Code', monospace !important; /* Data styling */
+        font-family: 'Fira Code', monospace !important; 
     }
 
     /* ALERTS */
     .stAlert {
-        background: rgba(30, 41, 59, 0.9) !important;
+        background: rgba(15, 23, 42, 0.8) !important;
+        backdrop-filter: blur(10px);
         border: 1px solid #3B82F6 !important;
-        border-radius: 8px !important;
+        border-radius: 12px !important;
+        color: white !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -190,32 +250,30 @@ st.markdown("<h1>ExoMind System</h1>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Bharatiya Antariksh Hackathon - AI Exoplanet Detection</div>", unsafe_allow_html=True)
 
 # ==========================================
-# CENTRALIZED CONTROL DECK
+# CENTRALIZED CONTROL DECK (VERTICAL STACK)
 # ==========================================
-# Centered Container for better visual flow
 st.write("") # Top spacing
-col_spacer1, col_center, col_spacer2 = st.columns([1, 6, 1])
+col_spacer1, col_center, col_spacer2 = st.columns([1, 4, 1])
 
 with col_center:
-    st.markdown("### 📡 Mission Parameters")
+    st.markdown("<h3 style='text-align: center; margin-bottom: 20px;'>🛰️ Mission Parameters</h3>", unsafe_allow_html=True)
     
-    # Form layout
-    form_col1, form_col2 = st.columns([1, 1])
+    # Fully vertical stack for perfect alignment
+    data_source = st.radio("Telemetry Link", ["Live NASA API", "Local File Upload"], horizontal=True, label_visibility="collapsed")
     
-    with form_col1:
-        data_source = st.radio("Data Source", ["Live NASA API", "Local File Upload"], horizontal=True)
-        
-    with form_col2:
-        tic_id = "Uploaded File"
-        uploaded_file = None
-        if data_source == "Live NASA API":
-            tic_id = st.text_input("Target TIC ID", value="TIC 279741379")
-        else:
-            uploaded_file = st.file_uploader("Upload Light Curve", type=["fits", "csv"])
+    st.write("") # spacing
+    
+    tic_id = "Uploaded File"
+    uploaded_file = None
+    if data_source == "Live NASA API":
+        tic_id = st.text_input("Target TIC ID", value="TIC 279741379", label_visibility="collapsed")
+    else:
+        uploaded_file = st.file_uploader("Upload FITS/CSV Payload", type=["fits", "csv"], label_visibility="collapsed")
 
-    analyze_btn = st.button("🚀 Deploy AI Pipeline")
+    st.write("") # spacing
+    analyze_btn = st.button("🚀 INITIATE SCAN")
 
-st.markdown("<br><hr style='border-color: rgba(59, 130, 246, 0.2);'><br>", unsafe_allow_html=True)
+st.markdown("<br><hr style='border-color: rgba(59, 130, 246, 0.15);'><br>", unsafe_allow_html=True)
 
 
 # ==========================================
@@ -225,7 +283,7 @@ if analyze_btn:
     time_array, flux_array = np.array([]), np.array([])
     
     if data_source == "Live NASA API":
-        with st.spinner("Establishing uplink to NASA MAST... Downloading data..."):
+        with st.spinner("Establishing uplink to NASA MAST... Downloading telemetry..."):
             time_array, flux_array = get_clean_lightcurve(tic_id)
     else:
         if uploaded_file is not None:
@@ -249,15 +307,15 @@ if analyze_btn:
                         flux_array = clean_lc.flux.value
                         os.unlink(tmp_path)
                 except Exception as e:
-                    st.error(f"Error processing file: {e}")
+                    st.error(f"Error processing payload: {e}")
         else:
-            st.error("Please upload a file first.")
+            st.error("Commander, please upload a payload first.")
         
     if len(flux_array) == 0:
-        st.error(f"Could not find or download data for {tic_id}. Please try another ID.")
+        st.error(f"Could not lock onto telemetry for {tic_id}. Aborting.")
     else:
         # Run AI
-        with st.spinner("Routing data to PyTorch Neural Network..."):
+        with st.spinner("Routing data through PyTorch Neural Network..."):
             target_length = 20000
             if len(flux_array) > target_length:
                 flux_for_ai = flux_array[:target_length]
@@ -277,12 +335,12 @@ if analyze_btn:
         # ----------------------------------------------------
         # UI: Metrics Dashboard
         # ----------------------------------------------------
-        st.markdown("### 📊 Intelligence Report")
+        st.markdown("<h3 style='text-align: center; margin-bottom: 20px;'>📊 Intelligence Report</h3>", unsafe_allow_html=True)
         
         if ai_result["is_planet"]:
-            st.success(f"🌟 **VERDICT:** {ai_result['class_label']} Detected! (Confidence: {ai_result['confidence']*100:.1f}%)")
+            st.success(f"🌟 **VERIFIED:** {ai_result['class_label']} Detected! (Confidence: {ai_result['confidence']*100:.1f}%)")
         else:
-            st.warning(f"⚠️ **VERDICT:** {ai_result['class_label']} (Confidence: {ai_result['confidence']*100:.1f}%)")
+            st.warning(f"⚠️ **NEGATIVE:** {ai_result['class_label']} (Confidence: {ai_result['confidence']*100:.1f}%)")
 
         st.write("") 
 
@@ -299,14 +357,14 @@ if analyze_btn:
         # ----------------------------------------------------
         # UI: Beautiful Plotly Graph
         # ----------------------------------------------------
-        st.markdown(f"### 📈 Light Curve Telemetry: {tic_id}")
+        st.markdown(f"<h3 style='text-align: center;'>📈 Light Curve Telemetry: {tic_id}</h3>", unsafe_allow_html=True)
         
         fig = go.Figure()
         fig.add_trace(go.Scatter(
             x=time_array, 
             y=flux_array, 
             mode='markers',
-            marker=dict(size=3, color='#3B82F6', opacity=0.8),
+            marker=dict(size=3, color='#8B5CF6', opacity=0.8),
             name='Flux Data'
         ))
         
