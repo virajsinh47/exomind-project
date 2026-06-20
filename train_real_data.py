@@ -5,13 +5,16 @@ import torch.optim as optim
 from torch.utils.data import TensorDataset, DataLoader
 
 # Import the data pipeline and model definitions
-from data_pipeline import get_clean_lightcurve
+from data_pipeline.data_pipeline import get_clean_lightcurve
 from model_training import ExoplanetCNN, INPUT_LENGTH
 
 def process_flux(flux_array, target_length):
     """Truncates or median-pads the flux array to exactly target_length."""
     if len(flux_array) == 0:
         return None
+        
+    # Convert astropy MaskedNDArray to standard numpy array to prevent np.pad crashes
+    flux_array = np.array(flux_array, dtype=np.float32)
     
     if len(flux_array) > target_length:
         # Truncate

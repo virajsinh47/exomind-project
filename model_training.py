@@ -8,41 +8,51 @@ from torch.utils.data import TensorDataset, DataLoader
 class ExoplanetCNN(nn.Module):
     def __init__(self, input_length):
         super(ExoplanetCNN, self).__init__()
-        # Input shape: (batch_size, 1, input_length)
-        self.conv1 = nn.Conv1d(in_channels=1, out_channels=16, kernel_size=5, stride=1, padding=2)
-        self.relu1 = nn.ReLU()
-        self.pool1 = nn.MaxPool1d(kernel_size=2)
-        
-        self.conv2 = nn.Conv1d(in_channels=16, out_channels=32, kernel_size=5, stride=1, padding=2)
-        self.relu2 = nn.ReLU()
-        self.pool2 = nn.MaxPool1d(kernel_size=2)
-        
-        # After two max pools of kernel size 2, length is divided by 4
-        self.flatten_length = (input_length // 4) * 32
-        
-        self.fc1 = nn.Linear(self.flatten_length, 64)
-        self.relu3 = nn.ReLU()
-        self.fc2 = nn.Linear(64, 3) # 3 classes: 0: Planet, 1: Eclipsing Binary, 2: Noise
-        
+        self.input_length = input_length
+        self.conv_layers = nn.Sequential(
+            nn.Conv1d(in_channels=1, out_channels=16, kernel_size=7, stride=2, padding=3),
+            nn.ReLU(),
+            nn.MaxPool1d(kernel_size=2, stride=2),
+            nn.Conv1d(in_channels=16, out_channels=32, kernel_size=7, stride=2, padding=3),
+            nn.ReLU(),
+            nn.MaxPool1d(kernel_size=2, stride=2),
+            nn.Conv1d(in_channels=32, out_channels=64, kernel_size=7, stride=1, padding=3),
+            nn.ReLU(),
+            nn.MaxPool1d(kernel_size=2, stride=2),
+        )
+        self._to_linear = None
+        self._get_conv_output_size()
+        self.fc_layers = nn.Sequential(
+            nn.Linear(self._to_linear, 128),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(128, 3) 
+        )
+
+    def _get_conv_output_size(self):
+        with torch.no_grad():
+            dummy_input = torch.zeros(1, 1, self.input_length)
+            output = self.conv_layers(dummy_input)
+            self._to_linear = output.numel()
+
     def forward(self, x):
-        x = self.conv1(x)
-        x = self.relu1(x)
-        x = self.pool1(x)
-        
-        x = self.conv2(x)
-        x = self.relu2(x)
-        x = self.pool2(x)
-        
-        x = x.view(x.size(0), -1) # Flatten
-        x = self.fc1(x)
-        x = self.relu3(x)
-        x = self.fc2(x)
+        x = self.conv_layers(x)
+        x = x.view(x.size(0), -1)
+        x = self.fc_layers(x)
         return x
+
+import os
 
 # Global model instance for inference
 # We'll use 20000 to match the requested dummy data size
 INPUT_LENGTH = 20000
 global_model = ExoplanetCNN(input_length=INPUT_LENGTH)
+
+# Load the real, trained AI brain if Member 2 has provided it!
+model_path = r"D:\exomind-project\models\exoplanet_model.pth"
+if os.path.exists(model_path):
+    global_model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+    print("Loaded real AI brain successfully!")
 
 def predict_exoplanet(flux_array: np.ndarray) -> dict:
     """

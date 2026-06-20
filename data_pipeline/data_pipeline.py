@@ -19,22 +19,25 @@ def get_clean_lightcurve(tic_id: str) -> tuple[np.ndarray, np.ndarray]:
     logger.info(f"Searching for TESS light curve for {tic_id}...")
     
     # 1. Search for the light curve using SPOC author
-    search_result = lk.search_lightcurve(tic_id, mission='TESS', author='SPOC')
-    
-    if len(search_result) == 0:
-        logger.warning(f"No light curve found for {tic_id}.")
-        return np.array([])
+    try:
+        search_result = lk.search_lightcurve(tic_id, mission='TESS', author='SPOC')
         
-    logger.info(f"Found {len(search_result)} results. Downloading...")
-    
-    # 2. Download the data
-    # We download all available sectors and stitch them together to form a continuous light curve
-    lc_collection = search_result.download_all()
-    if lc_collection is None or len(lc_collection) == 0:
-        logger.warning(f"Failed to download light curve for {tic_id}.")
-        return np.array([])
+        if len(search_result) == 0:
+            logger.warning(f"No light curve found for {tic_id}.")
+            return np.array([]), np.array([])
+            
+        logger.info(f"Found {len(search_result)} results. Downloading...")
         
-    lc = lc_collection.stitch()
+        # 2. Download the data
+        # We download ONLY the first available sector to prevent memory crashes and speed up downloads
+        lc = search_result[0].download()
+        if lc is None:
+            logger.warning(f"Failed to download light curve for {tic_id}.")
+            return np.array([]), np.array([])
+            
+    except Exception as e:
+        logger.error(f"Network error communicating with NASA for {tic_id}: {e}")
+        return np.array([]), np.array([])
     
     # 3. Process it: remove NaNs, remove outliers, and flatten
     logger.info("Cleaning light curve (removing NaNs, outliers, and flattening)...")

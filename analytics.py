@@ -46,6 +46,7 @@ def calculate_transit_stats(time_array: np.ndarray, flux_array: np.ndarray) -> d
         
     return {
         "orbital_period_days": float(best_period),
+        "transit_duration_days": float(best_duration),
         "transit_depth": float(transit_depth),
         "snr": float(snr)
     }
