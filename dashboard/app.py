@@ -95,8 +95,11 @@ hyperspace_html = """
 </html>
 """
 
+import base64
+b64_html = base64.b64encode(hyperspace_html.encode('utf-8')).decode('utf-8')
+
 st.markdown(f"""
-    <iframe srcdoc='{hyperspace_html.replace("'", "&#39;")}' 
+    <iframe src="data:text/html;base64,{b64_html}" 
             style="position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:-999; border:none; pointer-events:none;">
     </iframe>
 """, unsafe_allow_html=True)
