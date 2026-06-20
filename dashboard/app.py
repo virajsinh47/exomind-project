@@ -7,8 +7,11 @@ import os
 
 # Add the nested exomind-project directory to the Python path
 # This allows us to import the files created by the rest of the team.
-sys.path.append(r"D:\exomind-project\exomind-project")
-
+# Dynamically add the nested directory to the Python path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+nested_dir = os.path.join(parent_dir, "exomind-project")
+sys.path.append(nested_dir)
 # Import the real functions from your team!
 from data_pipeline.data_pipeline import get_clean_lightcurve
 from model_training import predict_exoplanet

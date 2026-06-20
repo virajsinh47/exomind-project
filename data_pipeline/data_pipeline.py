@@ -1,3 +1,4 @@
+# pyrefly: ignore [missing-import]
 import lightkurve as lk
 import numpy as np
 import logging
