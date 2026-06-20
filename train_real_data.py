@@ -5,7 +5,7 @@ import torch.optim as optim
 from torch.utils.data import TensorDataset, DataLoader
 
 # Import the data pipeline and model definitions
-from data_pipeline.data_pipeline import get_clean_lightcurve
+from data_pipeline import get_clean_lightcurve
 from model_training import ExoplanetCNN, INPUT_LENGTH
 
 def process_flux(flux_array, target_length):
