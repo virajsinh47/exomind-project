@@ -5,11 +5,12 @@ import time
 import sys
 import os
 
-# Dynamically add the nested exomind-project directory to the Python path
-# so it works on ANY computer (Mac, Windows, Linux)
+# Dynamically add both the parent directory and nested directory to Python path
+# so it works on ANY computer (Mac, Windows, Linux) and from GitHub clones
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 nested_dir = os.path.join(parent_dir, "exomind-project")
+sys.path.append(parent_dir)
 sys.path.append(nested_dir)
 
 # Import the real functions from your team!
