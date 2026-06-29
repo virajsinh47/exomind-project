@@ -19,7 +19,13 @@ def get_clean_lightcurve(tic_id: str) -> tuple[np.ndarray, np.ndarray]:
     """
     logger.info(f"Searching for TESS light curve for {tic_id}...")
     
-    # 1. Search for the light curve using SPOC author
+    # 1. Ensure TIC format (if user just typed numbers, prepend 'TIC ')
+    tic_id = str(tic_id).strip()
+    if tic_id.isdigit():
+        tic_id = f"TIC {tic_id}"
+    elif not tic_id.upper().startswith("TIC"):
+        tic_id = f"TIC {tic_id}"
+        
     try:
         search_result = lk.search_lightcurve(tic_id, mission='TESS', author='SPOC')
         
